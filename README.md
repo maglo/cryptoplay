@@ -1,2 +1,4 @@
-crytpoplay
+cryptoplay
 ==========
+
+Programming assignments
