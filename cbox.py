@@ -1,21 +1,21 @@
 class Cbox:
     "Class to hold ciphertext and implement helper functions"
-    def __init__(self, keylength, cryptofile=None, cryptotext=None):
 
+    def __init__(self, keylength, cryptofile=None, cryptotext=None):
+        self.MAX_KEYLENGTH = 16
         self._keylength = int(keylength)
+
+        if cryptotext is not None:
+            self._ctext = cryptotext
+            if not self.sanity_check():
+                raise ValueError("invalid ciphertext or keylength")
         
         if cryptofile is not None:
             cfile = open(cryptofile)
-            ctext = cfile.read()
-            if self.sanity_check(ctext):
-                self._ctext = ctext
-            else:
-                raise ValueError("invalid ciphertext")
-        if cryptotext is not None:
-            if self.sanity_check(cryptotext):
-                self._ctext = cryptotext
-            else:
-                raise ValueError("invalid ciphertext")
+            self._ctext = cfile.read()
+            if not self.sanity_check():
+                raise ValueError("invalid ciphertext or keylength")
+
 
     @property
     def keylength(self):
@@ -24,10 +24,19 @@ class Cbox:
     @property
     def ctext(self):
         return self._ctext
+
+    @property
+    def clist(self):
+        retval = []
+        numbytes = 2
+        for i in range(0,len(self.ctext),numbytes):
+            retval.append(int(self.ctext[i:i+numbytes], 16))
+        return retval
+
             
-    def sanity_check(self, ctext):
+    def sanity_check(self):
         #check length of ctext - should be even number and > 0
-        length = len(ctext)
+        length = len(self._ctext)
 
         if length > 0:
             retval = True
@@ -39,4 +48,17 @@ class Cbox:
         else:
             retval =  retval & False
 
+        # check that ctext only contains 0 - 9, A - F
+        whitelist = "ABCDEF0123456789"
+        if all(c in whitelist for c in self._ctext):
+            retval = retval & True
+        else:
+            retval = retval & False
+            
+        # check keylength
+        if self._keylength > 0 and self._keylength < self.MAX_KEYLENGTH:
+            retval = retval & True
+        else:
+            retval = retval & False
+            
         return retval

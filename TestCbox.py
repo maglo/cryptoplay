@@ -33,13 +33,42 @@ class TestCbox(unittest.TestCase):
         self.assertEqual(keylength, _cbox.keylength)
         self.assertEqual(ctext, _cbox.ctext)
 
+    def test_text_invalid_keylength_1(self):
+        keylength = -1
+        ctext = "AABBCCDDEEFF"
+
+        with self.assertRaises(ValueError):
+            _cbox = cbox.Cbox(keylength, cryptotext=ctext)
+
+    def test_text_invalid_keylength_2(self):
+        keylength = 100
+        ctext = "AABBCCDDEEFF"
+        
+        with self.assertRaises(ValueError):
+            _cbox = cbox.Cbox(keylength, cryptotext=ctext)
+
+
     def test_text_invalid(self):
         keylength = 7
         ctext = "AABBCCDDEEF"
         with self.assertRaises(ValueError):
             _cbox = cbox.Cbox(keylength, cryptotext=ctext)
 
+    def test_text_invalid_1(self):
+        keylength = 7
+        ctext = "AABBCCDDEEFG"
+        with self.assertRaises(ValueError):
+            _cbox = cbox.Cbox(keylength, cryptotext=ctext)
 
+    def test_clist(self):
+        keylength = 7
+        ctext = "AABBCCDDEEFF"
+        clist = [0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF]
+        
+        _cbox = cbox.Cbox(keylength, cryptotext=ctext)
+        self.assertEqual(keylength, _cbox.keylength)
+        self.assertEqual(clist, _cbox.clist)
+        
         
 if __name__ == '__main__':
     unittest.main()
