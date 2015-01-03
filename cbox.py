@@ -3,7 +3,11 @@ class Cbox:
 
     def __init__(self, keylength, cryptofile=None, cryptotext=None):
         self.MAX_KEYLENGTH = 16
-        self._keylength = int(keylength)
+        self._keylength = keylength
+        key = []
+        for i in range(0, keylength):
+            key.append(0)
+        self._key = key
 
         if cryptotext is not None:
             self._ctext = cryptotext
@@ -15,11 +19,20 @@ class Cbox:
             self._ctext = cfile.read()
             if not self.sanity_check():
                 raise ValueError("invalid ciphertext or keylength")
-
-
+        
     @property
     def keylength(self):
         return self._keylength
+    
+    @keylength.setter
+    def keylength(self,value):
+        print("keylength.setter")
+        self._keylength = value
+        key = []
+        for i in range(0, value):
+            key.append(0)
+        print(key)
+        self._key = key
 
     @property
     def ctext(self):
@@ -37,7 +50,7 @@ class Cbox:
     def bisection(self):
         retval = []
         clist = self.clist
-        keylength = self._keylength
+        keylength = self.keylength
         items = len(clist) // keylength
         remain = len(clist) % keylength
         
@@ -56,6 +69,35 @@ class Cbox:
                 
         return retval
     
+    @property
+    def key(self):
+        return self._key
+    
+    @key.setter
+    def key(self, value):
+        print("keylength: %d value: %d" % (keylength, value))
+        raise ValueError("Nothing will pass")
+        if len(value) == self.keylength:
+            self._key = value
+        else:
+            raise ValueError("invalid keylength")
+
+    @property
+    def decrypt(self):
+        numitems = len(self.clist)
+        keylength = self.keylength
+        clist = self.clist
+        key = self.key
+        retval = []
+        
+        for cursor in range(0, numitems):
+            cbyte = clist[cursor]
+            keycursor = cursor % keylength 
+            pbyte = cbyte ^ key[keycursor]
+            retval.append(pbyte)
+
+        return retval
+            
     def sanity_check(self):
         #check length of ctext - should be even number and > 0
         length = len(self._ctext)
@@ -78,7 +120,7 @@ class Cbox:
             retval = retval & False
             
         # check keylength
-        if self._keylength > 0 and self._keylength < self.MAX_KEYLENGTH:
+        if self.keylength > 0 and self.keylength < self.MAX_KEYLENGTH:
             retval = retval & True
         else:
             retval = retval & False

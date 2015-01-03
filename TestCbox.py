@@ -80,5 +80,47 @@ class TestCbox(unittest.TestCase):
         self.assertEqual(keylength, _cbox.keylength)
         self.assertEqual(clists, _cbox.bisection)
 
+    def test_decryption(self):
+        keylength = 3
+        key = [ 0x01, 0x02, 0x03 ]
+        ptext = [ 0xDE, 0xAD, 0xBE, 0xEF ]
+        ctext = "DFAFBDEE"
+        _cbox = cbox.Cbox(keylength, cryptotext=ctext)
+        _cbox.key = key
+        dec = _cbox.decrypt
+        self.assertEqual(ptext, dec)
+
+    def test_keylength(self):
+        keylength = 3
+        ctext = "DFAFBDEE"
+        _cbox = cbox.Cbox(keylength, cryptotext=ctext)
+        self.assertEqual(keylength, _cbox.keylength)
+
+        keylength = 4
+        _cbox.keylength = keylength
+        retval = _cbox.keylength
+        self.assertEqual(retval, keylength)
+
+    def test_key_property(self):
+        keylength = 3
+        key = [ 0x01, 0x02, 0x03 ]
+        ctext = "DFAFBDEE"
+        _cbox = cbox.Cbox(keylength, cryptotext=ctext)
+
+        retkey = _cbox.key
+        self.assertEqual([0x00, 0x00, 0x00], retkey)
+
+        _cbox.key = key
+        retkey = _cbox.key
+        self.assertEqual(key,retkey)
+
+        keylength = 4
+        _cbox.keylength = keylength
+        retkey = _cbox.key
+        self.assertEqual([0x00, 0x00, 0x00, 0x00], retkey)
+        with self.assertRaises(ValueError):
+            _cbox.key = key
+
+
 if __name__ == '__main__':
     unittest.main()
