@@ -12,8 +12,8 @@ class TestCbox(unittest.TestCase):
         ctext = cfile.read()
 
         _cbox = cbox.Cbox(keylength, cryptofile=testfile)
-        self.assertEqual(keylength, _cbox.keylength)
-        self.assertEqual(ctext, _cbox.ctext)
+        self.assertEqual(keylength, _cbox.get_keylength())
+        self.assertEqual(ctext, _cbox.get_ctext())
 
     def test_file_invalid(self):
         testfile = "test_invalid"
@@ -30,8 +30,8 @@ class TestCbox(unittest.TestCase):
         ctext = "AABBCCDDEEFF"
         
         _cbox = cbox.Cbox(keylength, cryptotext=ctext)
-        self.assertEqual(keylength, _cbox.keylength)
-        self.assertEqual(ctext, _cbox.ctext)
+        self.assertEqual(keylength, _cbox.get_keylength())
+        self.assertEqual(ctext, _cbox.get_ctext())
 
     def test_text_invalid_keylength_1(self):
         keylength = -1
@@ -66,8 +66,8 @@ class TestCbox(unittest.TestCase):
         clist = [0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF]
         
         _cbox = cbox.Cbox(keylength, cryptotext=ctext)
-        self.assertEqual(keylength, _cbox.keylength)
-        self.assertEqual(clist, _cbox.clist)
+        self.assertEqual(keylength, _cbox.get_keylength())
+        self.assertEqual(clist, _cbox.get_clist())
         
     def test_bisection(self):
         keylength = 3
@@ -77,8 +77,8 @@ class TestCbox(unittest.TestCase):
         ]
 
         _cbox = cbox.Cbox(keylength, cryptotext=ctext)
-        self.assertEqual(keylength, _cbox.keylength)
-        self.assertEqual(clists, _cbox.bisection)
+        self.assertEqual(keylength, _cbox.get_keylength())
+        self.assertEqual(clists, _cbox.get_bisection())
 
     def test_decryption(self):
         keylength = 3
@@ -86,20 +86,22 @@ class TestCbox(unittest.TestCase):
         ptext = [ 0xDE, 0xAD, 0xBE, 0xEF ]
         ctext = "DFAFBDEE"
         _cbox = cbox.Cbox(keylength, cryptotext=ctext)
-        _cbox.key = key
-        dec = _cbox.decrypt
+        _cbox.set_key(key)
+        dec = _cbox.decrypt()
         self.assertEqual(ptext, dec)
 
     def test_keylength(self):
         keylength = 3
         ctext = "DFAFBDEE"
         _cbox = cbox.Cbox(keylength, cryptotext=ctext)
-        self.assertEqual(keylength, _cbox.keylength)
+        self.assertEqual(keylength, _cbox.get_keylength())
 
         keylength = 4
-        _cbox.keylength = keylength
-        retval = _cbox.keylength
+        _cbox.set_keylength(keylength)
+        retval = _cbox.get_keylength()
+        key = _cbox.get_key()
         self.assertEqual(retval, keylength)
+        self.assertEqual([0x00, 0x00, 0x00, 0x00], key)
 
     def test_key_property(self):
         keylength = 3
@@ -107,19 +109,16 @@ class TestCbox(unittest.TestCase):
         ctext = "DFAFBDEE"
         _cbox = cbox.Cbox(keylength, cryptotext=ctext)
 
-        retkey = _cbox.key
+        retkey = _cbox.get_key()
         self.assertEqual([0x00, 0x00, 0x00], retkey)
 
-        _cbox.key = key
-        retkey = _cbox.key
+        _cbox.set_key(key)
+        retkey = _cbox.get_key()
         self.assertEqual(key,retkey)
 
-        keylength = 4
-        _cbox.keylength = keylength
-        retkey = _cbox.key
-        self.assertEqual([0x00, 0x00, 0x00, 0x00], retkey)
+        key = [ 0x01, 0x02, 0x03, 0x04 ]
         with self.assertRaises(ValueError):
-            _cbox.key = key
+            _cbox.set_key(key)
 
 
 if __name__ == '__main__':

@@ -3,54 +3,52 @@ class Cbox:
 
     def __init__(self, keylength, cryptofile=None, cryptotext=None):
         self.MAX_KEYLENGTH = 16
-        self._keylength = keylength
+        self.set_keylength(keylength)
         key = []
         for i in range(0, keylength):
             key.append(0)
-        self._key = key
+        self.set_key(key)
 
         if cryptotext is not None:
-            self._ctext = cryptotext
+            self.set_ctext(cryptotext)
             if not self.sanity_check():
                 raise ValueError("invalid ciphertext or keylength")
         
         if cryptofile is not None:
             cfile = open(cryptofile)
-            self._ctext = cfile.read()
+            data = cfile.read()
+            self.set_ctext(data)
             if not self.sanity_check():
                 raise ValueError("invalid ciphertext or keylength")
         
-    @property
-    def keylength(self):
+    def get_keylength(self):
         return self._keylength
     
-    @keylength.setter
-    def keylength(self,value):
-        print("keylength.setter")
+    def set_keylength(self,value):
         self._keylength = value
         key = []
         for i in range(0, value):
             key.append(0)
-        print(key)
-        self._key = key
+        self.set_key(key)
 
-    @property
-    def ctext(self):
+    def get_ctext(self):
         return self._ctext
 
-    @property
-    def clist(self):
+    def set_ctext(self, value):
+        self._ctext = value
+
+    def get_clist(self):
         retval = []
         numbytes = 2
-        for i in range(0,len(self.ctext),numbytes):
-            retval.append(int(self.ctext[i:i+numbytes], 16))
+        ctext = self.get_ctext()
+        for i in range(0,len(ctext),numbytes):
+            retval.append(int(ctext[i:i+numbytes], 16))
         return retval
 
-    @property
-    def bisection(self):
+    def get_bisection(self):
         retval = []
-        clist = self.clist
-        keylength = self.keylength
+        clist = self.get_clist()
+        keylength = self.get_keylength()
         items = len(clist) // keylength
         remain = len(clist) % keylength
         
@@ -69,25 +67,20 @@ class Cbox:
                 
         return retval
     
-    @property
-    def key(self):
+    def get_key(self):
         return self._key
     
-    @key.setter
-    def key(self, value):
-        print("keylength: %d value: %d" % (keylength, value))
-        raise ValueError("Nothing will pass")
-        if len(value) == self.keylength:
+    def set_key(self, value):
+        if len(value) == self.get_keylength():
             self._key = value
         else:
             raise ValueError("invalid keylength")
 
-    @property
     def decrypt(self):
-        numitems = len(self.clist)
-        keylength = self.keylength
-        clist = self.clist
-        key = self.key
+        clist = self.get_clist()
+        numitems = len(clist)
+        keylength = self.get_keylength()
+        key = self.get_key()
         retval = []
         
         for cursor in range(0, numitems):
@@ -120,7 +113,7 @@ class Cbox:
             retval = retval & False
             
         # check keylength
-        if self.keylength > 0 and self.keylength < self.MAX_KEYLENGTH:
+        if self._keylength > 0 and self._keylength < self.MAX_KEYLENGTH:
             retval = retval & True
         else:
             retval = retval & False
