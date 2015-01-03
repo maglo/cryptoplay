@@ -71,9 +71,9 @@ class TestCbox(unittest.TestCase):
         
     def test_bisection(self):
         keylength = 3
-        ctext = "0102030102030102030102"
+        ctext = "1112132122233132334142"
         clists = [
-            [0x01, 0x01, 0x01, 0x01],[0x02, 0x02, 0x02, 0x02],[0x03, 0x03, 0x03]
+            [0x11, 0x21, 0x31, 0x41],[0x12, 0x22, 0x32, 0x42],[0x13, 0x23, 0x33]
         ]
 
         _cbox = cbox.Cbox(keylength, cryptotext=ctext)
