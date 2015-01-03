@@ -69,6 +69,16 @@ class TestCbox(unittest.TestCase):
         self.assertEqual(keylength, _cbox.keylength)
         self.assertEqual(clist, _cbox.clist)
         
-        
+    def test_bisection(self):
+        keylength = 3
+        ctext = "0102030102030102030102"
+        clists = [
+            [0x01, 0x01, 0x01, 0x01],[0x02, 0x02, 0x02, 0x02],[0x03, 0x03, 0x03]
+        ]
+
+        _cbox = cbox.Cbox(keylength, cryptotext=ctext)
+        self.assertEqual(keylength, _cbox.keylength)
+        self.assertEqual(clists, _cbox.bisection)
+
 if __name__ == '__main__':
     unittest.main()

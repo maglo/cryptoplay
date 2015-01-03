@@ -33,7 +33,29 @@ class Cbox:
             retval.append(int(self.ctext[i:i+numbytes], 16))
         return retval
 
+    @property
+    def bisection(self):
+        retval = []
+        clist = self.clist
+        keylength = self._keylength
+        items = len(clist) // keylength
+        remain = len(clist) % keylength
+        
+        for keyindex in range(0, keylength):
+            sublist = []
             
+            for cursor in range(0, items):
+                item = clist[keyindex + cursor * keylength]
+                sublist.append(item)
+
+            if remain > keyindex:
+                item = clist[keyindex + (cursor + 1) * keylength]
+                sublist.append(item)
+
+            retval.append(sublist)
+                
+        return retval
+    
     def sanity_check(self):
         #check length of ctext - should be even number and > 0
         length = len(self._ctext)
