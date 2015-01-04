@@ -1,8 +1,10 @@
 """Vigenere Cipher Solver
 
 Usage:
-   vigenere.py crack (<ciphertext> | -f <cipherfile>) --keylength=<int> [--verbose]
-   vigenere.py analyze (<ciphertext> | -f <cipherfile>) [--max-keylength=<int>]
+   vigenere.py crack (<ciphertext> | -f <cipherfile>) --keylength=<int>  [--verbose]
+   vigenere.py analyze (<ciphertext> | -f <cipherfile>) [--max-keylength=<int>] [--verbose]
+   vigenere.py encrypt (<plaintext> | -f <plainfile>) (--key <key> | <keyfile>) [--verbose]
+   vigenere.py decrypt (<ciphertext> | -f <cipherfile>) (--key <key> | <keyfile>) [--verbose]
    vigenere.py (-h | --help)
 
 Options:
@@ -32,6 +34,16 @@ if __name__ == '__main__':
         
 
     if clargs['analyze']:
+        print("Not implemented yet. Bummer")
+        logging.info('=' * 8 + 'Stop' + '=' * 8)
+        exit(0)
+
+    if clargs['encrypt']:
+        print("Not implemented yet. Bummer")
+        logging.info('=' * 8 + 'Stop' + '=' * 8)
+        exit(0)
+
+    if clargs['decrypt']:
         print("Not implemented yet. Bummer")
         logging.info('=' * 8 + 'Stop' + '=' * 8)
         exit(0)
