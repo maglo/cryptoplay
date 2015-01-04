@@ -1,23 +1,12 @@
 class Cbox:
-    "Class to hold ciphertext and implement helper functions"
+    """Class to hold ciphertext and implement helper functions"""
 
-    def __init__(self, keylength, cryptofile=None, cryptotext=None):
+    def __init__(self, keylength, ciphertext):
         self.MAX_KEYLENGTH = 16
         self.set_keylength(keylength)
-        key = []
-        for i in range(0, keylength):
-            key.append(0)
-        self.set_key(key)
 
-        if cryptotext is not None:
-            self.set_ctext(cryptotext)
-            if not self.sanity_check():
-                raise ValueError("invalid ciphertext or keylength")
-        
-        if cryptofile is not None:
-            cfile = open(cryptofile)
-            data = cfile.read()
-            self.set_ctext(data)
+        if ciphertext is not None:
+            self.set_ctext(ciphertext)
             if not self.sanity_check():
                 raise ValueError("invalid ciphertext or keylength")
         
@@ -25,9 +14,9 @@ class Cbox:
         return self._keylength
     
     def set_keylength(self,value):
-        self._keylength = value
+        self._keylength = int(value)
         key = []
-        for i in range(0, value):
+        for i in range(0, int(value)):
             key.append(0)
         self.set_key(key)
 

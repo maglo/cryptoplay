@@ -1,38 +1,55 @@
 """Vigenere Cipher Solver
 
 Usage:
-   vigenere.py crack (<ciphertext> | -f <cipherfile>) --keylength=<int>
+   vigenere.py crack (<ciphertext> | -f <cipherfile>) --keylength=<int> [--verbose]
    vigenere.py analyze (<ciphertext> | -f <cipherfile>) [--max-keylength=<int>]
    vigenere.py (-h | --help)
 
 Options:
    -h --help         Show this screen
    --version         Show version
-
+   --verbose         Debug output
 
 """
 
 from docopt import docopt
 from sys import exit
-import cbox
+import brute
+import logging
 
 VERSION = "0.1"
 
 if __name__ == '__main__':
     clargs = docopt(__doc__, version=VERSION)
-    
+
+    if clargs["--verbose"]:
+        loglevel = logging.DEBUG
+    else:
+        loglevel = logging.INFO
+        
+    logging.basicConfig(filename='output.log', level=loglevel, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.info('=' * 8 + 'Start' + '=' * 8)
+        
+
     if clargs['analyze']:
         print("Not implemented yet. Bummer")
+        logging.info('=' * 8 + 'Stop' + '=' * 8)
         exit(0)
 
     if clargs['crack']:
+        keylength = clargs["--keylength"]
         if clargs['-f']:
-            #file open <cipherfile>
-            #store contents in object and set keylength
-            cbox = cbox.Cbox(cryptofile = clargs["<cipherfile>"], keylength=clargs["--keylength"])
-            exit(0)
+            cipherfile = clargs["<cipherfile>"]
+            cfile = open(cipherfile)
+            ciphertext = cfile.read()
         else:
-            #store contents of <ciphertext> in object and set keylength
-            cbox = cbox.Cbox(cryptotext = clargs["<ciphertext>"], keylength=clargs["--keylength"])
-            exit(0)
+            ciphertext = clargs["<ciphertext>"]
+
+        brute = brute.Brute(ciphertext = ciphertext, keylength = keylength)
+        ptext = brute.get_ptext()
+        
+        print(ptext)
+
+        logging.info('=' * 8 + 'Stop' + '=' * 8)
+        exit(0)
                     
