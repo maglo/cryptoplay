@@ -49,7 +49,7 @@ class TestCbox(unittest.TestCase):
         self.assertEqual(int(keylength), _cbox.get_keylength())
         self.assertEqual(clist, _cbox.get_clist())
         
-    def test_bisection(self):
+    def test_cipherstreams_vigenere(self):
         keylength = "3"
         ctext = "1112132122233132334142"
         clists = [
@@ -58,7 +58,7 @@ class TestCbox(unittest.TestCase):
 
         _cbox = cbox.Cbox(keylength, ciphertext=ctext)
         self.assertEqual(int(keylength), _cbox.get_keylength())
-        self.assertEqual(clists, _cbox.get_bisection())
+        self.assertEqual(clists, _cbox.get_cipherstreams_vigenere())
 
     def test_decryption(self):
         keylength = "3"

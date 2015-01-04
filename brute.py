@@ -54,7 +54,7 @@ class Brute:
 
     def brute(self):
         cbox = self.get_cbox()
-        cipherstreams = cbox.get_bisection()
+        cipherstreams = cbox.get_cipherstreams_vigenere()
         number_of_streams = len(cipherstreams)
         log.debug("Received %d cipherstreams" % number_of_streams)
 
@@ -80,21 +80,6 @@ class Brute:
             
         log.info("Candidate key: %s" % keybytes)
         return keybytes
-                
-                
-            
-#        for cipherstream in cipherstreams:
-#            plainstreams = []
-#            for key in range(0, 0xff):
-#                plainstream = []
-#                for cbyte in cipherstream:
-#                    pbyte = cbyte ^ key
-#                    plainstream.append(pbyte)
-#                if self.is_printable(plainstream):
-#                    log.debug("Candidate key: %x" % key)
-#                    plainstreams.append(plainstream)
-                
-        self.set_ptext("AOA")
 
     def is_printable(self, plainstream):
         #if all bytes in plainstream >= 32 <127 return true

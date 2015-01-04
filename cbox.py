@@ -34,7 +34,7 @@ class Cbox:
             retval.append(int(ctext[i:i+numbytes], 16))
         return retval
 
-    def get_bisection(self):
+    def get_cipherstreams_vigenere(self):
         retval = []
         clist = self.get_clist()
         keylength = self.get_keylength()
